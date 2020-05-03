@@ -15,12 +15,18 @@ const watson = new NaturalLanguageUnderstandingV1({
   url: "https://gateway.watsonplatform.net/natural-language-understanding/api/",
 });
 
-async function robot(content) {
+const state = require('./state.js');
+
+async function robot() {
+  const content = state.load()
+  
   await fetchContentFromWikipedia(content);
   sanitizeContent(content);
   breakContentIntoSentences(content);
   limitMaximumSentences(content);
   await fetchKeywordOfAllSentences(content);
+
+  state.save(content);
 
   async function fetchWatsonAndReturnKeywords(sentence) {
     return new Promise((resolve, reject) => {
