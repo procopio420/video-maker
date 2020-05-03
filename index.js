@@ -1,36 +1,43 @@
-const readline = require('readline-sync');
+const readline = require("readline-sync");
 const robots = {
-    text: require('./robots/text.js'),
-}
+  text: require("./robots/text.js"),
+};
 
 async function start() {
-    const content = {};
+  const content = {};
 
-    function askAndReturnLang(){
-        const languages = ['pt', 'en', 'es'];
-        return languages[readline.keyInSelect(languages, 'Choose one language: ')];
-    }
-    content.lang = askAndReturnLang();
+  function askAndReturnLang() {
+    const languages = ["pt", "en", "es", "fr"];
 
-    function askAndReturnSearchTerm() {
-        return readline.question('Type a Wikipedia search term: ');
-    }
-    content.searchTerm = askAndReturnSearchTerm();
+    return languages[readline.keyInSelect(languages, "Choose one language: ")];
+  }
+  content.lang = askAndReturnLang();
 
-    function askAndReturnPrefix(searchTerm) {
-        const prefixes = [`Who is ${searchTerm}`, `What is ${searchTerm}`, `The history of ${searchTerm}`];
-        return prefixes[readline.keyInSelect(prefixes, 'Choose one option:')].replace(` ${searchTerm}`, '');
-    }
-    content.prefix = askAndReturnPrefix(content.searchTerm);
+  function askAndReturnSearchTerm() {
+    return readline.question("Type a Wikipedia search term: ");
+  }
+  content.searchTerm = askAndReturnSearchTerm();
 
-    function askAndReturnMaximumSentences() {
-        return readline.question('How many sentences do you want? (number) ');
-    }
-    content.maximumSentences = askAndReturnMaximumSentences();
+  function askAndReturnPrefix(searchTerm) {
+    const prefixes = [
+      `Who is ${searchTerm}`,
+      `What is ${searchTerm}`,
+      `The history of ${searchTerm}`,
+    ];
+    return prefixes[
+      readline.keyInSelect(prefixes, "Choose one search prefix:")
+    ].replace(` ${searchTerm}`, "");
+  }
+  content.prefix = askAndReturnPrefix(content.searchTerm);
 
-    await robots.text(content);
+  function askAndReturnMaximumSentences() {
+    return readline.question("How many sentences do you want? (number) ");
+  }
+  content.maximumSentences = askAndReturnMaximumSentences();
 
-    console.log(JSON.stringify(content, null, 4));
+  await robots.text(content);
+
+  console.log(JSON.stringify(content, null, 4));
 }
 
 start();
