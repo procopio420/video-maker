@@ -20,6 +20,7 @@ async function robot(content) {
   sanitizeContent(content);
   breakContentIntoSentences(content);
   limitMaximumSentences(content);
+  await fetchKeywordOfAllSentences(content);
 
   async function fetchWatsonAndReturnKeywords(sentence) {
     return new Promise((resolve, reject) => {
@@ -34,12 +35,18 @@ async function robot(content) {
           if (error) {
             throw error;
           } else {
-            const keywords = response.keywords.map((keyword) => keyword.text);
+            const keywords = response.result.keywords.map((keyword) => keyword.text);
             resolve(keywords);
           }
         }
       );
     });
+  }
+
+  async function fetchKeywordOfAllSentences(content) {
+      for(const sentence of content.sentences){
+          sentence.keywords = await fetchWatsonAndReturnKeywords(sentence.text);
+      }
   }
 
   async function fetchContentFromWikipedia(content) {
@@ -97,7 +104,7 @@ async function robot(content) {
   }
 
   function limitMaximumSentences(content) {
-      content.sentences = content.sentences.slice(0, content.maximumSentences)
+      content.sentences = content.sentences.slice(0, content.maximumSentences);
   }
 }
 
