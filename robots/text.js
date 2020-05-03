@@ -1,11 +1,45 @@
 const algorithmia = require("algorithmia");
 const algorithmiaApiKey = require("../credentials/algorithmia.json").api_key;
+
 const sbd = require("sbd");
+
+const NaturalLanguageUnderstandingV1 = require("ibm-watson/natural-language-understanding/v1");
+const { IamAuthenticator } = require("ibm-watson/auth");
+const watsonApiKey = require("../credentials/ibmcloud.json").apikey;
+
+const watson = new NaturalLanguageUnderstandingV1({
+  version: "2019-07-12",
+  authenticator: new IamAuthenticator({
+    apikey: watsonApiKey,
+  }),
+  url: "https://gateway.watsonplatform.net/natural-language-understanding/api/",
+});
 
 async function robot(content) {
   await fetchContentFromWikipedia(content);
   sanitizeContent(content);
   breakContentIntoSentences(content);
+
+  async function fetchWatsonAndReturnKeywords(sentence) {
+    return new Promise((resolve, reject) => {
+      watson.analyze(
+        {
+          text: sentence,
+          features: {
+            keywords: {},
+          },
+        },
+        (error, response) => {
+          if (error) {
+            throw error;
+          } else {
+            const keywords = response.keywords.map((keyword) => keyword.text);
+            resolve(keywords);
+          }
+        }
+      );
+    });
+  }
 
   async function fetchContentFromWikipedia(content) {
     const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey);
@@ -13,11 +47,9 @@ async function robot(content) {
       "web/WikipediaParser/0.1.2"
     );
     const wikipediaResponse = await algorithmiaWikipedia.pipe({
-        "articleName": content.searchTerm,
-        "lang": content.lang
-    }
-      
-    );
+      articleName: content.searchTerm,
+      lang: content.lang,
+    });
     const wikipediaContent = wikipediaResponse.get();
 
     content.sourceContentOriginal = wikipediaContent.content;
@@ -54,13 +86,13 @@ async function robot(content) {
     content.sentences = [];
     const sentences = sbd.sentences(content.sourceContentSanitized);
 
-    sentences.forEach((sentence)=>{
-        content.sentences.push({
-            text: sentence,
-            keywords: [],
-            images: []
-        })
-    })
+    sentences.forEach((sentence) => {
+      content.sentences.push({
+        text: sentence,
+        keywords: [],
+        images: [],
+      });
+    });
   }
 }
 

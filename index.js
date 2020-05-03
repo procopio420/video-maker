@@ -6,6 +6,12 @@ const robots = {
 async function start() {
     const content = {};
 
+    function askAndReturnLang(){
+        const languages = ['pt', 'en', 'es'];
+        return languages[readline.keyInSelect(languages, 'Choose one language: ')];
+    }
+    content.lang = askAndReturnLang();
+
     function askAndReturnSearchTerm() {
         return readline.question('Type a Wikipedia search term: ');
     }
