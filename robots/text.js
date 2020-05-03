@@ -1,8 +1,8 @@
 const algorithmia = require('algorithmia');
 const algorithmiaApiKey = require('../credentials/algorithmia.json').api_key;
 
-function robot(content) {
-    fetchContentFromWikipedia(content);
+async function robot(content) {
+    await fetchContentFromWikipedia(content);
     // sanitizeContent(content);
     // breakContentIntoSentences(content);
 
