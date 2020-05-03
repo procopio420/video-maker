@@ -4,17 +4,7 @@ const robots = {
 }
 
 async function start() {
-    const content = {
-        searchTerm: '',
-        prefix: '',
-        sourceContentOriginal: '',
-        sourceContentSanitized: '',
-        sentences: [{
-            text: '',
-            keywords: [''],
-            images: ['']
-        }]
-    };
+    const content = {};
 
     function askAndReturnSearchTerm() {
         return readline.question('Type a Wikipedia search term: ');
@@ -28,6 +18,8 @@ async function start() {
     content.prefix = askAndReturnPrefix(content.searchTerm);
 
     await robots.text(content);
+
+    console.log(content);
 }
 
 start();
