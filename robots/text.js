@@ -19,6 +19,7 @@ async function robot(content) {
   await fetchContentFromWikipedia(content);
   sanitizeContent(content);
   breakContentIntoSentences(content);
+  limitMaximumSentences(content);
 
   async function fetchWatsonAndReturnKeywords(sentence) {
     return new Promise((resolve, reject) => {
@@ -93,6 +94,10 @@ async function robot(content) {
         images: [],
       });
     });
+  }
+
+  function limitMaximumSentences(content) {
+      content.sentences = content.sentences.slice(0, content.maximumSentences)
   }
 }
 

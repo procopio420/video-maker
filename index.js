@@ -23,6 +23,11 @@ async function start() {
     }
     content.prefix = askAndReturnPrefix(content.searchTerm);
 
+    function askAndReturnMaximumSentences() {
+        return readline.question('How many sentences do you want? (number) ');
+    }
+    content.maximumSentences = askAndReturnMaximumSentences();
+
     await robots.text(content);
 
     console.log(content);
