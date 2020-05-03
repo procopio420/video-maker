@@ -28,7 +28,6 @@ async function start() {
     content.prefix = askAndReturnPrefix(content.searchTerm);
 
     await robots.text(content);
-    console.log(content);
 }
 
 start();
