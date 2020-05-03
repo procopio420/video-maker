@@ -7,13 +7,15 @@ function start() {
         return readline.question('Type a Wikipedia search term: ');
     }
 
-    function askAndReturnPrefix() {
-        const prefixes = ['Who is', 'What is', 'The history of'];
+    content.searchTerm = askAndReturnSearchTerm();
+
+    function askAndReturnPrefix(searchTerm) {
+        const prefixes = [`Who is ${searchTerm}`, `What is ${searchTerm}`, `The history of ${searchTerm}`];
         return prefixes[readline.keyInSelect(prefixes, 'Choose one option:')];
     }
 
-    content.searchTerm = askAndReturnSearchTerm();
-    content.prefix = askAndReturnPrefix();
+
+    content.prefix = askAndReturnPrefix(content.searchTerm);
 
     console.log(content);
 }
